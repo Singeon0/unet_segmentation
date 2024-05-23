@@ -6,7 +6,7 @@ import h5py
 import numpy as np
 
 
-def pre_process(n1, data_path=".", N_train_patients=5, N_test_patients=1):
+def pre_process(n1, data_path=".", N_train_patients=5, N_test_patients=1, name=""):
     # Helper functions
     def load_nrrd(full_path_filename):
 

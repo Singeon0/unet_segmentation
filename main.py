@@ -20,14 +20,14 @@ except ImportError:
     drive_path = "content/drive/MyDrive/Colab Notebooks/debug"
 
 
-N1 = 112  # 400,320,240,160, 112
+N1 = 240  # 400,320,240,160, 112
 N_CHANNELS = 1  # Images are gray
 INPUT_SHAPE = (N1, N1, N_CHANNELS)
 N_TRAIN_PATIENTS, N_TEST_PATIENTS = 1, 1
-UNET_MODEL = True
-MULTIRES_MODEL = True
-ATT_UNET_MODEL = True
-MULTIRES_ATT_MODEL = False
+UNET_MODEL = False
+MULTIRES_MODEL = False
+ATT_UNET_MODEL = False
+MULTIRES_ATT_MODEL = True
 
 # Training
 
@@ -37,7 +37,7 @@ data_path = f"{drive_path}/UTAH Test set/Utah_Training.h5"
 model_path_unet = f"{drive_path}/models/CNN_models/unet.keras"
 model_path_multires = f"{drive_path}/models/CNN_models/multi_res_model.keras"
 model_path_att_unet = f"{drive_path}/models/CNN_models/att_unet_model.keras"
-model_path_multires_att_unet = f"{drive_path}/models/CNN_models/multires_att_unet.keras"
+model_path_multires_att_unet = f"{drive_path}/models/CNN_models/multires att unet 112 keras.keras"
 
 if not os.path.exists(file_path):
     pre_process(N1, data_path=drive_path, N_train_patients=N_TRAIN_PATIENTS, N_test_patients=N_TEST_PATIENTS)
@@ -133,7 +133,7 @@ if MULTIRES_ATT_MODEL:
     if os.path.exists(model_path_multires_att_unet):
         model_name = 'MULTIRES_ATT_UNET_MODEL'
         print(f"Model found. Loading the model {model_name}")
-        model = load_model(model_path_multires_att_unet)
+        model = load_model(model_path_multires_att_unet, safe_mode=False)
         print("Model loaded successfully.")
         print("Starting prediction")
         predict(file_path, model, data["train.mean"], data["train.sd"], model_name=model_name)
