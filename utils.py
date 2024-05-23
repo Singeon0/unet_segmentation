@@ -138,7 +138,7 @@ def score(dir_path, log_path, model_name):
 
                 preprocess = True if random.random() <= 0.1 else False
 
-                if preprocess and model_name is "MULTIRES_ATT_UNET_MODEL":
+                if preprocess and model_name == "MULTIRES_ATT_UNET_MODEL":
                     # Ensure the mask is binary
                     binary_pred_img = (pred_img // 255).astype(bool)
                     binary_true_img = (true_img // 255).astype(bool)
