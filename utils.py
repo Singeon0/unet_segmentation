@@ -8,6 +8,7 @@ from PIL import Image
 from skimage.color import rgb2gray
 from sklearn.metrics import f1_score, jaccard_score
 from scipy.ndimage import binary_fill_holes
+import random
 
 
 def create_folder(full_path_filename):
@@ -135,9 +136,9 @@ def score(dir_path, log_path, model_name):
                     true_img = rgb2gray(true_img) * 255
                 true_img = true_img.astype(np.uint8)
 
-                preprocess = True
+                preprocess = True if random.random() <= 0.1 else False
 
-                if preprocess:
+                if preprocess and model_name is "MULTIRES_ATT_UNET_MODEL":
                     # Ensure the mask is binary
                     binary_pred_img = (pred_img // 255).astype(bool)
                     binary_true_img = (true_img // 255).astype(bool)
