@@ -143,7 +143,7 @@ def main_unetr(N1, train_images, train_labels, valid_images, valid_labels, epoch
 
     model = build_unetr_2d(config)
 
-    # model.summary()
+    # # model.summary()
 
     # Compile the model
     model.compile(optimizer=optimizer, loss=loss, metrics=['accuracy'])

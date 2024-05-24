@@ -139,7 +139,7 @@ def attentionunet(input_shape, dropout=0.2, batchnorm=True):
     outputs = layers.Activation('softmax')(conv_final)  # Use softmax for multiclass segmentation
 
     model = models.Model(inputs=[inputs], outputs=[outputs])
-    model.summary()
+    # model.summary()
     return model
 
 

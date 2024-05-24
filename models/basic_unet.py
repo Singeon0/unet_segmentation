@@ -69,7 +69,7 @@ def unet(input_shape):
     outputs = layers.Conv2D(2, (1, 1), activation='softmax')(up_conv_2)
 
     model = models.Model(inputs=[inputs], outputs=[outputs])
-    model.summary()
+    # model.summary()
     return model
 
 
