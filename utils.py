@@ -22,7 +22,7 @@ def predict(dir_path, CNN_model, mu=0, sd=1, n1=240, model_name=''):
     # print(f"Starting prediction. mu: {mu}, sd: {sd}, crop size: {n1}")
 
     # get all the files for testing
-    files = [file for file in os.listdir(dir_path) if not any(ignore in file for ignore in ["log", "Utah_Training.h5", ".DS_Store", "auto segmentation"])]    # print(f"Processing files: {files}")
+    files = [file for file in os.listdir(dir_path) if not any(ignore in file for ignore in ["log", "Utah_Training.h5","Utah_Training_400.h5", ".DS_Store", "auto segmentation"])]    # print(f"Processing files: {files}")
 
     for i in range(len(files)):
         # print(f"Segmenting: {files[i]}")
@@ -184,6 +184,7 @@ def overlay_segmentation(dir_path, model_name, color=[255, 0, 0], alpha=0.1):
     files = os.listdir(dir_path)
     if "log" in files: files.remove("log")
     if "Utah_Training.h5" in files: files.remove("Utah_Training.h5")
+    if "Utah_Training_400.h5" in files: files.remove("Utah_Training_400.h5")
     if ".DS_Store" in files: files.remove(".DS_Store")
     if ".DS_Store" in files: files.remove(".DS_Store")
 

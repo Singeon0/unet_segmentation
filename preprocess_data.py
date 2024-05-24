@@ -66,43 +66,43 @@ def pre_process(n1, data_path=".", N_train_patients=5, N_test_patients=1, name="
             Label.append(patient_3DMRI_cavity[n11:n12, n11:n12, n_slice])
 
     # creating test set by writing to output jpeg
-    # for i in range(N_test_patients):
-    #
-    #     # read in the MRI scan
-    #     patient_3DMRI_scan = load_nrrd(
-    #         os.path.join(f"{data_path}/initial_data/Testing Set", test_files[i], 'lgemri.nrrd'))
-    #
-    #     # cavity labels (1 = positive, 0 = negative)
-    #     patient_3DMRI_cavity = load_nrrd(
-    #         os.path.join(f"{data_path}/initial_data/Testing Set", test_files[i], 'laendo.nrrd')) // 255
-    #
-    #     # move dimension one to the end so that dimension = X by Y x Z directions
-    #     patient_3DMRI_scan = np.rollaxis(patient_3DMRI_scan, 0, 3)
-    #     patient_3DMRI_cavity = np.rollaxis(patient_3DMRI_cavity, 0, 3)
-    #
-    #     # create an output folder for the single patient
-    #     create_folder(os.path.join(f"{data_path}/UTAH Test set", str(i + 1) + " - " + test_files[i]))
-    #
-    #     # create output folders for the scan and label
-    #     create_folder(os.path.join(f"{data_path}/UTAH Test set",
-    #                                str(i + 1) + " - " + test_files[i], ))  # folder for patient single scan
-    #     create_folder(
-    #         os.path.join(f"{data_path}/UTAH Test set", str(i + 1) + " - " + test_files[i], "data"))  # folder for data
-    #     create_folder(os.path.join(f"{data_path}/UTAH Test set", str(i + 1) + " - " + test_files[i],
-    #                                "cavity"))  # folder for CAVITY labels
-    #     # create_folder(os.path.join(f"{data_path}/UTAH Test set", str(i + 1) + " - " + test_files[i],
-    #     #                            "auto segmentation"))  # folder for automatic segmentation
-    #
-    #     for n_slice in range(patient_3DMRI_scan.shape[2]):
-    #         # slice name with correct format for AMIRA
-    #         output_filename = "slice" + "{0:03}".format(n_slice + 1) + ".jpeg"
-    #
-    #         # write to data and label file
-    #         cv2.imwrite(
-    #             os.path.join(f"{data_path}/UTAH Test set", str(i + 1) + " - " + test_files[i], "data", output_filename),
-    #             patient_3DMRI_scan[:, :, n_slice])
-    #         cv2.imwrite(os.path.join(f"{data_path}/UTAH Test set", str(i + 1) + " - " + test_files[i], "cavity",
-    #                                  output_filename), patient_3DMRI_cavity[:, :, n_slice] * 255)
+    for i in range(N_test_patients):
+
+        # read in the MRI scan
+        patient_3DMRI_scan = load_nrrd(
+            os.path.join(f"{data_path}/initial_data/Testing Set", test_files[i], 'lgemri.nrrd'))
+
+        # cavity labels (1 = positive, 0 = negative)
+        patient_3DMRI_cavity = load_nrrd(
+            os.path.join(f"{data_path}/initial_data/Testing Set", test_files[i], 'laendo.nrrd')) // 255
+
+        # move dimension one to the end so that dimension = X by Y x Z directions
+        patient_3DMRI_scan = np.rollaxis(patient_3DMRI_scan, 0, 3)
+        patient_3DMRI_cavity = np.rollaxis(patient_3DMRI_cavity, 0, 3)
+
+        # create an output folder for the single patient
+        create_folder(os.path.join(f"{data_path}/UTAH Test set", str(i + 1) + " - " + test_files[i]))
+
+        # create output folders for the scan and label
+        create_folder(os.path.join(f"{data_path}/UTAH Test set",
+                                   str(i + 1) + " - " + test_files[i], ))  # folder for patient single scan
+        create_folder(
+            os.path.join(f"{data_path}/UTAH Test set", str(i + 1) + " - " + test_files[i], "data"))  # folder for data
+        create_folder(os.path.join(f"{data_path}/UTAH Test set", str(i + 1) + " - " + test_files[i],
+                                   "cavity"))  # folder for CAVITY labels
+        # create_folder(os.path.join(f"{data_path}/UTAH Test set", str(i + 1) + " - " + test_files[i],
+        #                            "auto segmentation"))  # folder for automatic segmentation
+
+        for n_slice in range(patient_3DMRI_scan.shape[2]):
+            # slice name with correct format for AMIRA
+            output_filename = "slice" + "{0:03}".format(n_slice + 1) + ".jpeg"
+
+            # write to data and label file
+            cv2.imwrite(
+                os.path.join(f"{data_path}/UTAH Test set", str(i + 1) + " - " + test_files[i], "data", output_filename),
+                patient_3DMRI_scan[:, :, n_slice])
+            cv2.imwrite(os.path.join(f"{data_path}/UTAH Test set", str(i + 1) + " - " + test_files[i], "cavity",
+                                     output_filename), patient_3DMRI_cavity[:, :, n_slice] * 255)
 
     Image, Label = np.array(Image), np.array(Label)
 
@@ -115,6 +115,8 @@ def pre_process(n1, data_path=".", N_train_patients=5, N_test_patients=1, name="
 
     # calculate train mean and standard deviation
     train_mean, train_sd = np.mean(Image), np.std(Image)
+
+    print(f"Train mean: {train_mean} and Train standard deviation: {train_sd}, N1 = {n1}")
 
     # normalise the training data
     Image = (Image - train_mean) / train_sd

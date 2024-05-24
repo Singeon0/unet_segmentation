@@ -20,10 +20,10 @@ except ImportError:
     drive_path = "content/drive/MyDrive/Colab Notebooks/debug"
 
 
-N1 = 240  # 400,320,240,160, 112
+N1 = 112  # 400,320,240,160, 112
 N_CHANNELS = 1  # Images are gray
 INPUT_SHAPE = (N1, N1, N_CHANNELS)
-N_TRAIN_PATIENTS, N_TEST_PATIENTS = 1, 1
+N_TRAIN_PATIENTS, N_TEST_PATIENTS = 100, 54
 UNET_MODEL = False
 MULTIRES_MODEL = False
 ATT_UNET_MODEL = False
@@ -34,12 +34,13 @@ MULTIRES_ATT_MODEL = True
 file_path = f"{drive_path}/UTAH Test set"
 log_path = f"{drive_path}/UTAH Test set/log"
 data_path = f"{drive_path}/UTAH Test set/Utah_Training.h5"
+data_path_400 = f"{drive_path}/UTAH Test set/Utah_Training_400.h5"
 model_path_unet = f"{drive_path}/models/CNN_models/unet.keras"
 model_path_multires = f"{drive_path}/models/CNN_models/multi_res_model.keras"
 model_path_att_unet = f"{drive_path}/models/CNN_models/att_unet_model.keras"
-model_path_multires_att_unet = f"{drive_path}/models/CNN_models/multires att unet 112 keras.keras"
+model_path_multires_att_unet = f"models/CNN_models/multires_att_unet.keras"
 
-if not os.path.exists(file_path):
+if not os.path.exists(data_path):
     pre_process(N1, data_path=drive_path, N_train_patients=N_TRAIN_PATIENTS, N_test_patients=N_TEST_PATIENTS)
 
 # Loading data
@@ -53,7 +54,7 @@ optimizer = 'adam'
 loss = 'categorical_crossentropy'
 # lr = 0.0001
 batch_size = 16
-epoch = 1
+epoch = 10
 
 print(tf.config.experimental.list_physical_devices ('GPU'))
 
@@ -130,6 +131,10 @@ if ATT_UNET_MODEL:
         overlay_segmentation(file_path, model_name=model_name, alpha=0.2)
 
 if MULTIRES_ATT_MODEL:
+    for var in ['data', 'train_images', 'valid_images', 'train_labels', 'valid_labels']:
+        del locals()[var]
+    data = h5py.File(data_path_400, "r")
+    train_images, valid_images, train_labels, valid_labels = train_test_split(np.array(data['image']), np.array(data['label']).astype(bool), test_size=0.2, random_state=42)
     if os.path.exists(model_path_multires_att_unet):
         model_name = 'MULTIRES_ATT_UNET_MODEL'
         print(f"Model found. Loading the model {model_name}")
@@ -138,14 +143,14 @@ if MULTIRES_ATT_MODEL:
         print("Starting prediction")
         predict(file_path, model, data["train.mean"], data["train.sd"], model_name=model_name)
         print("Starting evaluation")
-        score(file_path, log_path, model_name=model_name)
+        # score(file_path, log_path, model_name=model_name)
         print("Starting overlay")
         overlay_segmentation(file_path, model_name=model_name, alpha=0.2)
     else:
         model_name = 'MULTIRES_ATT_UNET_MODEL'
         print("Model not found. Training a new model...")
-        model = main_multires_attention_unet(input_shape=INPUT_SHAPE, train_images=train_images, train_labels=train_labels, valid_images=valid_images,
-                              valid_labels=valid_labels, epoch=epoch, batch_size=batch_size, optimizer=optimizer, loss=loss, filename_charts=f"metrics/metrics_chart_multires_att_unet.png")
+        # model = main_multires_attention_unet(input_shape=INPUT_SHAPE, train_images=train_images, train_labels=train_labels, valid_images=valid_images,
+        #                       valid_labels=valid_labels, epoch=epoch, batch_size=batch_size, optimizer=optimizer, loss=loss, filename_charts=f"metrics/metrics_chart_multires_att_unet.png")
         model.save(model_path_multires_att_unet)
         predict(file_path, model, data["train.mean"], data["train.sd"], model_name=model_name)
         print("Starting evaluation")
