@@ -166,9 +166,10 @@ def main_attention_unet(input_shape, train_images, train_labels, valid_images, v
     model.compile(optimizer=optimizer, loss=loss, metrics=['accuracy'])
 
     # Callback for early stopping
-    early_stopping = EarlyStopping(
-        monitor='val_loss',  # Monitor the validation accuracy
-        patience=5,  # Number of epochs with no improvement after which training will be stopped
+    early_stopping = EarlyStopping(monitor='val_loss',  # Monitor the validation accuracy
+        patience=7,  # Number of epochs with no improvement after which training will be stopped
+        verbose=1,  # Show this information
+        restore_best_weights=True  # Restore model weights from the epoch with the best value of the monitored quantity
     )
 
     # Fit the model on the training set and validate on a portion of it

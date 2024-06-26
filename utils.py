@@ -136,24 +136,8 @@ def score(dir_path, log_path, model_name):
                     true_img = rgb2gray(true_img) * 255
                 true_img = true_img.astype(np.uint8)
 
-                preprocess = True if random.random() <= 0.1 else False
-
-                if preprocess and model_name == "MULTIRES_ATT_UNET_MODEL":
-                    # Ensure the mask is binary
-                    binary_pred_img = (pred_img // 255).astype(bool)
-                    binary_true_img = (true_img // 255).astype(bool)
-
-                    # Fill holes in the binary mask
-                    filled_pred_img = binary_fill_holes(binary_pred_img)
-                    filled_true_img = binary_fill_holes(binary_true_img)
-
-                    # Convert back to the original data type if necessary
-                    pred[k, :, :] = filled_pred_img.astype(int)
-                    true[k, :, :] = filled_true_img.astype(int)
-
-                else:
-                    pred[k, :, :] = pred_img // 255
-                    true[k, :, :] = true_img // 255
+                pred[k, :, :] = pred_img // 255
+                true[k, :, :] = true_img // 255
 
             # calculate f1 score
             pred_f1, true_f1 = pred.flatten(), true.flatten()
